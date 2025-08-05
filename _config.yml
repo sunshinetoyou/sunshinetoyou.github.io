@@ -172,6 +172,9 @@ collections:
   tabs:
     output: true
     sort_by: order
+  dreamhack:
+    output: true
+    permalink: /dreamhack/:name/
 
 defaults:
   - scope:

@@ -1,0 +1,194 @@
+---
+layout: post
+title: "[dh]ezmix"
+date: 2025-08-05 19:18 +0900
+---
+### **INFO**
+
+<figure style="text-align:center;">
+  <img alt="" src="../assets/DreamHack/ezmix/challenge.png" style="width:80%;display:block;margin:auto;">
+  <figcaption><em>Fig 1. CHANLLENGE</em></figcaption>
+</figure>
+
+### **RECON**
+
+ELF 포멧의 실행파일 1개와 바이너리 데이터 2개가 주어진다.
+<figure>
+    <img alt="" src="../assets/DreamHack/ezmix/recon_files.png" style="width:100%;">
+    <figcaption style="text-align:center;"><em>Fig 2. Files</em></figcaption>
+</figure>
+
+### **SOLUTION**
+
+실행 파일을 기드라로 열어서 디컴파일된 소스코드를 보자.
+
+FUN_001014d8 함수의 내부에서 Fig #. 을 보면, 실행파일은 `main program.bin output.bin` 으로 동작할 것으로 유추할 수 있다.
+
+<figure>
+    <img alt="" src="../assets/DreamHack/ezmix/solution_1.png" style="width:100%;">
+    <figcaption style="text-align:center;"><em>Fig 3. Usage of ELF File</em></figcaption>
+</figure>
+
+제대로 된 인자를 넣어주면, program.bin 파일에서 1024B를 읽어온다. 그리고 FUN_0010136c 함수로 넘어간다.
+
+<figure>
+    <img alt="" src="../assets/DreamHack/ezmix/solution_2.png" style="width:100%;">
+    <figcaption style="text-align:center;"><em>Fig 4. Read program.bin</em></figcaption>
+</figure>
+
+FUN_0010136c 함수는 program.bin 파일에서 가져온 데이터(read_buf)를 통해 의도한 연산을 처리한다. 이 함수는 read_buf[idx]를 분기를 위한 값으로, read_buf[idx+1]을 분기 후 수행할 로직을 위한 값으로 설정한다. 
+
+read_buf[idx]가 1, 2, 3이면 그에 대한 계산 로직(func_1, func_2, func_3)으로 입력값 최신화를 수행하며, 4이면 입력을 받는다.
+
+이러한 로직에 맞게 Fig #. 를 자세히보면 0x00 오프셋의 값만 0x04이며, 나머지는 0x03 이하의 값을 가지는 것을 확인할 수 있다. 
+
+<figure>
+    <img alt="" src="../assets/DreamHack/ezmix/solution_3.png" style="width:100%;">
+    <figcaption style="text-align:center;"><em>Fig 5. program.bin (HxD)</em></figcaption>
+</figure>
+
+```bash
+// FUN_0010136c
+idx = 0
+LOOP (idx < read_len):
+    data_even = read_buf[idx]
+    data_odd  = read_buf[idx+1]
+
+    switch (data_even):
+        case (1):
+            update_input(func_1, data_odd, ...) 
+            break
+        case (2):
+            update_input(func_2, data_odd, ...) 
+            break
+        case (3):
+            update_input(func_3, data_odd, ...)
+            break
+        case (4):
+            input()
+    idx += 2
+DONE
+``` 
+
+입력값을 최신화하는 로직에 대해서 파악해보자. 
+
+먼저 update_input 함수는 다음과 같다. 
+```c
+void update_input(void *func,char read_odd_v,char *input,int input_len)
+{
+  char new_c;
+  int i;
+  
+  for (i = 0; i < input_len; i = i + 1) {
+    new_c = (*(code *)func)(input[i],read_odd_v);
+    input[i] = new_c;
+  }
+  return;
+}
+
+// 실제 사용
+update_input(func_3,read_odd_v,input,input_len);
+```
+
+입력 전부를 1바이트씩 계산 로직에 맞게 순서대로 갱신하는 함수이다.
+
+그렇다면 계산 로직은 어떨까. 의사코드로 표현하면 다음과 같다.
+
+```c
+char func_1(char input_i,char data_odd):
+    return input_i + data_odd
+
+char func_2(char input_i,char data_odd):
+    return input_i ^ read_odd_v;
+
+char func_3(char input_i,char data_odd):
+    shift = param_2 & 7U; // 0~7 사이 시프트값
+
+    return (uparam_1 << (8 - shift)) | (uparam_1 >> shift);
+```
+
+func_1은 data_odd를 모든 input[i]에 각각 더하고, func_2는 XOR 연산을 한다.
+
+func_3는 배열에서 나오는 개념인 Rotate 중에 left Rotate 연산을 한다.
+
+<figure>
+    <img alt="" src="./asserts/ezmix/solution_4.png" style="width:100%;">
+    <figcaption style="text-align:center;"><em>Fig 6. ???: 이게 뭔데</em></figcaption>
+</figure>
+
+### **POC**
+
+입력이 어떻게 처리되는지 알았으니, 주어진 ouput.bin 값을 디코딩하여 플래그(예상)을 추출하는 역산을 수행해보자. 
+
+func_1, func_2, func_3에 대한 역함수를 만들고, program 데이터를 역순으로 처리하는 update_output 함수를 만들어서 플래그를 획득했다.
+```c
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+
+typedef char (*FuncPtr)(char, char);
+
+void update_output(void *func,char read_odd_v,char *input,int input_len)
+{
+  FuncPtr fp = (FuncPtr)func;
+  char new_c;
+  int i;
+  
+  for (i = 0; i < input_len; i++) {
+    new_c = fp(input[i], read_odd_v);
+    input[i] = new_c;
+  }
+  return;
+}
+
+char func_1(char param_1,char param_2)
+{
+  return param_1 - param_2;
+}
+
+char func_2(char param_1,char param_2)
+{
+  return param_1 ^ param_2;
+}
+
+char func_3(char param_1, char param_2)
+{
+    unsigned char uparam_1 = (unsigned char)param_1;
+    unsigned int shift = param_2 & 7U; // 0~7 사이 시프트값
+
+    // 8비트 회전 우측 (rotate right) 연산 구현
+    return (char)((uparam_1 >> (8 - shift)) | (uparam_1 << shift));
+}
+
+int main() {
+
+    char program[]= {0x04, 0x90, 0x01, 0x4E, (중략) 0x03, 0xBB, 0x03, 0x23};
+    char output[] = {0xE6, 0xD8, (중략) 0x2E, 0x9F};
+
+    int len = sizeof(program) / sizeof(program[0]);
+    int outputlen = sizeof(output) / sizeof(output[0]);
+    // printf("len: %d\n", len);
+
+    unsigned char even = 0; 
+    unsigned char odd = 0;
+    for (int i = len; i > 0; i-=2) {
+        odd = program[i-1];
+        even = program[i-2];
+        switch(even) {
+            case(0x01):
+                update_output(func_1, odd, output, outputlen);
+                break;
+            case(0x02):
+                update_output(func_2, odd, output, outputlen);
+                break;
+            case(0x03):
+                update_output(func_3, odd, output, outputlen);
+                break;
+            case(0x04):
+                printf("%s", output);
+                return 0;
+        }
+    }
+    return 0;
+}
+```
