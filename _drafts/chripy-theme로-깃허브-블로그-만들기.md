@@ -1,3 +1,4 @@
+<!-- html-proofer-ignore-file -->
 <!-- Front Matter -->
 ---
 layout: post
