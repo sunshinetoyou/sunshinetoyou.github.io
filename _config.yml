@@ -173,7 +173,7 @@ collections:
     output: true
     sort_by: order
   dreamhack:
-    output: true
+    output: false
     permalink: /dreamhack/:name/
 
 defaults:
