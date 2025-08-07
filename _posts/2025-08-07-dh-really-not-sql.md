@@ -65,5 +65,5 @@ else:
 
 ![login]
 
-[chall]: /assets/DreamHack/reallynotsql/challenge.png
+[chall]: /assets/DreamHack/reallynotsql/chall.png
 [login]: /assets/DreamHack/reallynotsql/solution_login.png
