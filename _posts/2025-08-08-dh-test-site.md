@@ -2,6 +2,8 @@
 layout: post
 title: "[DH]Test site"
 date: 2025-08-07 23:31 +0900
+category: Write-Up
+tag: [dreamhack, web]
 ---
 ### **INFO**
 ![chall]
