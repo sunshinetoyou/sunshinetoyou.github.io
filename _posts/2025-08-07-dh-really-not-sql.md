@@ -16,7 +16,7 @@ _Fig 1. Challenge_
 이떄, admin, guest의 계정이 주어진 것을 확인할 수 있으며, admin으로 로그인하면 flag.php를 통해 서버 내부의 플래그 값을 입력할 수 있다.
 
 ### **SOLUTION**
-admin 게정은 json으로 관리되며, /var/www/http/user/admin.json 경로로 접근이 가능하다.
+admin 계정은 json으로 관리되며, /var/www/http/user/admin.json 경로로 접근이 가능하다.
 
 edit_profile.php 파일에서 계정의 비밀번호를 수정할 수 있는 기능이 존재하지만, admin 계정의 세션 인증이 필요하기 때문에 접근할 수 없다.
 
