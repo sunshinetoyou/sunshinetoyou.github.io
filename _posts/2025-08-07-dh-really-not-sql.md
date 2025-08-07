@@ -2,6 +2,8 @@
 layout: post
 title: "[DH]Really Not SQL"
 date: 2025-08-07 12:04 +0900
+category: Write-Up
+tag: [dreamhack, web]
 ---
 ### **INFO**
 ![chall]
