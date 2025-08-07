@@ -67,5 +67,3 @@ else:
 
 [chall]: /assets/DreamHack/reallynotsql/challenge.png
 [login]: /assets/DreamHack/reallynotsql/solution_login.png
-[chall]: /assets/DreamHack/reallynotsql/challenge.png
-[chall]: /assets/DreamHack/reallynotsql/challenge.png
