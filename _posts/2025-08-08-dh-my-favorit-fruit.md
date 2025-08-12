@@ -3,7 +3,7 @@ layout: post
 title: "[DH]My Favorit Fruit"
 date: 2025-08-08 22:45 +0900
 category: Write-Up
-tag: [dreamhack, rev]
+tag: [dreamhack, reversing]
 ---
 ### **INFO**
 ![chall]
