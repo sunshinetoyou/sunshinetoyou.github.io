@@ -2,12 +2,11 @@
 layout: post
 title: "[ImaginaryCTF-2025] REV writeup"
 category: Write-Up
-tag: [dreamhack, reversing]
+tag:
+- ImaginaryCTF-2025
+- reversing
+date: 2025-09-11 23:56 +0900
 ---
-
-## 
-
-
 ## weired-app
 ### INFO
 ![chall1]
