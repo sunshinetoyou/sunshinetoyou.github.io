@@ -42,27 +42,27 @@ END
 먼저, gdb <실행파일>과 start 명령을 통해 동적 분석을 위한 베이스를 준비한다.
 
 ![sol_1]
-_Fig 2. _
+_Fig 3. Check BreakPoint Address (RAW)_
 
 그리고 기드라에서 BP를 설정할 정적 주소를 확인한다.<br>
 단, 기드라에서 디폴트로 설정한 0x100000 를 빼고 오프셋을 구한다.
 
 ![sol_2]
-_Fig 3. _
+_Fig 4. Set BreakPoint (VA)_
 
 pwndbg를 설치하여, 해당 도구에서 사용할 수 있는 rebase 함수를 통해 동적 주소에 오프셋을 가지고 접근했다.
 
 continue를 통해 설정한 bp 위치로 이동한다.
 
 ![sol_3]
-_Fig 4. _
+_Fig 5. After BreakPoint Setting_
 
 이동한 위치를 살펴보면 rbp - 0x4 위치에 있는 값을 8 Byte만큼 가져왔을 때 값이 0임을 확인할 수 있다. 
 
 이대로 실행하면 플래그를 디코딩하여 프린트하는 명령줄은 실행되지 않는다.
 
 ![sol_4]
-_Fig 5. _
+_Fig 5. Change $rbp-0x4 value_
 
 dword ptr [rbp - 0x4] 값을 5로 변조하고 동작시키면 플래그를 획득할 수 있다.
 
