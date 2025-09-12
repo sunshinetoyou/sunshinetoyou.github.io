@@ -1,11 +1,10 @@
 ---
 layout: post
 title: "[DH] Small Counter"
+category: Write-Up
 tag:
 - dreamhack
 - reversing
-category:
-- writeup
 date: 2025-09-12 14:04 +0900
 ---
 ### INFO

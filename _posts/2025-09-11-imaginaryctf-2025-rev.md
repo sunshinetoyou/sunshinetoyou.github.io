@@ -77,7 +77,7 @@ print(''.join(orig))  # ictf{FLAG}
 
 [chall1]: /assets/CTF/imaginaryCTF2025/wired-app/chall.png
 [apk 컴파일 과정]: /assets/CTF/imaginaryCTF2025/wired-app/APK%20컴파일%20과정.png
-[apk 컴파일 과정]: /assets/CTF/imaginaryCTF2025/wired-app/ep.png
-[apk 컴파일 과정]: /assets/CTF/imaginaryCTF2025/wired-app/main_oncreate.png
-[apk 컴파일 과정]: /assets/CTF/imaginaryCTF2025/wired-app/transformedFlag.png
-[apk 컴파일 과정]: /assets/CTF/imaginaryCTF2025/wired-app/transformedFlag_text.png
+[ep]: /assets/CTF/imaginaryCTF2025/wired-app/ep.png
+[main_oncreate]: /assets/CTF/imaginaryCTF2025/wired-app/main_oncreate.png
+[transformedFlag]: /assets/CTF/imaginaryCTF2025/wired-app/transformedFlag.png
+[transformedFlag_text]: /assets/CTF/imaginaryCTF2025/wired-app/transformedFlag_text.png
