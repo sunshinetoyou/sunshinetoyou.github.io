@@ -87,6 +87,7 @@ countinue
 
 
 [chall]: /assets/DreamHack/smallcounter/chall.png
+[da_1]: /assets/DreamHack/smallcounter/da_1.png
 [sol_1]: /assets/DreamHack/smallcounter/sol_1.png
 [sol_2]: /assets/DreamHack/smallcounter/sol_2.png
 [sol_3]: /assets/DreamHack/smallcounter/sol_3.png
